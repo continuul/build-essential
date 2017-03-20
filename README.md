@@ -1,15 +1,26 @@
-# build-essential-docker
+# Build-Essential Official Image Build
+
+## Description
 
 A Docker for trusted software builds.
-
 Provides a trusted and easy way to build applications and their containers.
+
+The official Docker images are hosted on [Continuul's Docker Hub for Build-Essential](https://hub.docker.com/r/continuul/build-essential/).
+
+There are several pieces that are used to build this image:
+
+* We start with an Alpine base image, and add the Go language tools, and the alpine-sdk,
+  an equivalent to Ubuntu build-essentials.
+* We add openssh, zip and bash.
 
 ## Usage
 
 For example,
 
 ```bash
-docker run --rm --name builder -v $(pwd)/test:/go/src/github.com/company/product continuul/builder scripts/build.sh
+: ${HERMETIC_BUILD_DIR:=/go/src/${SELF_ROOT#*$GOPATH/src/}}
+ docker run --rm -e "BUILD_TAGS=$BUILD_TAGS" -v "$(pwd)":${HERMETIC_BUILD_DIR} -w ${HERMETIC_BUILD_DIR} \
+    continuul/build-essential ./scripts/dist_build.sh
 ```
 
 ## Contents
